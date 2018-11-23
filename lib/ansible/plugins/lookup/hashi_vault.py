@@ -188,7 +188,11 @@ class HashiVault:
             raise AnsibleError("Invalid Hashicorp Vault Token Specified for hashi_vault lookup")
 
     def get(self):
-        data = self.client.read(self.secret)
+
+        if 'data' in self.client.read(self.secret):
+            data = self.client.read(self.secret)['data']
+        else:
+            data = self.client.read(self.secret)
 
         if data is None:
             raise AnsibleError("The secret %s doesn't seem to exist for hashi_vault lookup" % self.secret)
@@ -275,3 +279,4 @@ class LookupModule(LookupBase):
             ret.append(value)
 
         return ret
+
